@@ -1,4 +1,4 @@
-# Busca-cep
+# Busca-cep-terminal
 Busca os dados de um determinado cep (informado no terminal) no site viacep. Em seguida salva os dados encontrados em um arquivo cep.txt
 
 ## Pré-requisitos
