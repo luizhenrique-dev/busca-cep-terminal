@@ -34,12 +34,12 @@ func main() {
 	}
 }
 
-func fetchViaCepData(cep string) (ViaCEP, error) {
+func fetchViaCepData(cep string) (*ViaCEP, error) {
 	preparedUrl := fmt.Sprintf("https://viacep.com.br/ws/%s/json/", cep)
 	req, err := http.Get(preparedUrl)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro na requisição: %v\n", err)
-		return ViaCEP{}, err
+		return nil, err
 	}
 
 	defer req.Body.Close()
@@ -47,16 +47,16 @@ func fetchViaCepData(cep string) (ViaCEP, error) {
 	bodyContent, err := io.ReadAll(req.Body)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro ao ler o body: %v\n", err)
-		return ViaCEP{}, err
+		return nil, err
 	}
 
 	data, err := parseJsonToObject(bodyContent)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro ao fazer parse do json: %v\n", err)
-		return data, err
+		return &data, err
 	}
 
-	return data, nil
+	return &data, nil
 }
 
 func parseJsonToObject(bodyContent []byte) (ViaCEP, error) {
@@ -65,7 +65,7 @@ func parseJsonToObject(bodyContent []byte) (ViaCEP, error) {
 	return data, err
 }
 
-func createCepFile(data ViaCEP) {
+func createCepFile(data *ViaCEP) {
 	file, err := os.Create(CEP_FILE_NAME)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro ao criar o arquivo: %v\n", err)
